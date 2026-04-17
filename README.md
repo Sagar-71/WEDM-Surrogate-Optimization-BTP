@@ -13,7 +13,7 @@ of Wire EDM (WEDM) machining parameters for titanium alloys.
 
 ## BTP-II — Ti-6Al-4V
 - **Surrogates**: Random Forest, SVR, XGBoost
-- **Optimization**: NSGA-II, PSO
+- **Optimization**: NSGA-II
 - **Decision Analysis**: Knee-point detection (Euclidean distance)
 - **Dataset**: Jagdale et al. (2025) L9 Taguchi → RSM-augmented DOE
 
