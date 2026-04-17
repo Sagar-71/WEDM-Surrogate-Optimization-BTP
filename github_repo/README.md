@@ -1,17 +1,16 @@
 # Data-Driven Surrogate Modelling and Multi-Objective Optimization of WEDM Parameters for Ti-6Al-4V Alloy
 
-**BTP-II Report | B.Tech + M.Tech Dual Degree Project**
+**BTP-II Report**
 
-**Author:** Sagar Chandan (22ME31051)
-**Supervisor:** Dr. Sankha Deb
-**Department:** Mechanical Engineering, Indian Institute of Technology Kharagpur
-**Date:** April 2026
+**Author:** Sagar Chandan
 
 ---
 
 ## Overview
 
-This repository contains the complete code, data, and report for the **Bachelor's Thesis Project Phase II (BTP-II)**, which extends the hybrid RSM-ML modelling framework developed in [BTP-I](https://github.com/sagarchandan/BTP-I) (Ti-6Al-7Nb) to **Ti-6Al-4V alloy** with multi-objective optimization and experimental validation.
+This repository contains the code, data, and reports for a two-phase BTP 
+investigating data-driven surrogate modelling and multi-objective optimization 
+of Wire EDM (WEDM) machining parameters for titanium alloys.
 
 ### What this project does
 
@@ -34,52 +33,6 @@ This repository contains the complete code, data, and report for the **Bachelor'
 **Experimental Validation:**
 - MRR: 7.50 mm³/min (predicted 7.98, error 6.0%)
 - SR: 1.74 µm (predicted 1.97, error 11.7%)
-
----
-
-## Repository Structure
-
-```
-.
-├── README.md
-├── LICENSE
-├── requirements.txt
-├── .gitignore
-├── report/
-│   ├── main.tex              # Complete LaTeX source
-│   ├── BTP2_Report.pdf       # Compiled report (29 pages)
-│   └── iitkgp_logo.png       # IIT KGP logo for title page
-├── code/
-│   └── generate_plots.py     # Plot generation script
-├── data/
-│   ├── expanded_dataset_1100.csv    # RSM-expanded training data
-│   ├── cv_results.csv               # 5-fold CV metrics
-│   ├── validation_results.csv       # L9 validation metrics
-│   ├── hypervolume_comparison.csv   # Pareto front quality
-│   ├── pareto_RF.csv                # RF Pareto solutions
-│   ├── pareto_SVR.csv               # SVR Pareto solutions
-│   ├── pareto_XGBoost.csv           # XGBoost Pareto solutions
-│   └── all_pareto_solutions.csv     # Combined Pareto data
-├── plots/
-│   ├── 01_methodology.png
-│   ├── 02_experimental_data.png
-│   ├── 03_parameter_effects.png
-│   ├── 04_expanded_dataset.png
-│   ├── 05_cv_comparison.png
-│   ├── 06_predicted_vs_actual.png
-│   ├── 07_validation_table.png
-│   ├── 08_pareto_with_kneepoints.png
-│   ├── 09_hypervolume.png
-│   ├── 10_kneepoint_table.png
-│   ├── 11_mrr_sr_correlation.png
-│   └── 12_experimental_validation.png
-└── experimental/
-    ├── wedm_machine.jpg       # Electronica Job Master D-zire
-    ├── wedm_cutting.jpg       # WEDM cutting with flushing
-    ├── wedm_controller.jpg    # CNC controller panel
-    ├── wedm_wireguide.jpg     # Wire guide close-up
-    └── sr_measurement.png     # Taylor Hobson Talysurf measurement
-```
 
 ## Methodology
 
@@ -104,7 +57,7 @@ The primary experimental data is sourced from:
 
 ## Experimental Setup
 
-Validation experiments were conducted on an **Electronica Job Master D-zire** CNC Wire EDM machine (Electronica HiTech Machine Tools Pvt. Ltd., SRP Electronica Group) at the Training Workshop, Department of Mechanical Engineering, IIT Kharagpur. Surface roughness was measured using a **Taylor Hobson Talysurf** profilometer with TalyMap Gold 7.1 software.
+Validation experiments were conducted on an **Electronica Job Master D-zire** CNC Wire EDM machine (Electronica HiTech Machine Tools Pvt. Ltd., SRP Electronica Group). Surface roughness was measured using a **Taylor Hobson Talysurf** profilometer with TalyMap Gold 7.1 software.
 
 ## Dependencies
 
@@ -118,42 +71,9 @@ pymoo
 joblib
 ```
 
-Install with:
-```bash
-pip install -r requirements.txt
-```
-
-## Compiling the Report
-
-```bash
-cd report
-pdflatex main.tex
-pdflatex main.tex  # Run twice for TOC and references
-```
-
-## Citation
-
-If you use this work, please cite:
-
-```bibtex
-@thesis{chandan2026btp2,
-  title   = {Data-Driven Surrogate Modelling and Multi-Objective Optimization of WEDM Parameters for Ti-6Al-4V Alloy},
-  author  = {Chandan, Sagar},
-  year    = {2026},
-  school  = {Indian Institute of Technology Kharagpur},
-  type    = {B.Tech + M.Tech Dual Degree Project (BTP-II)},
-  note    = {Supervisor: Dr. Sankha Deb}
-}
-```
-
 ## Related Work
 
 - **BTP-I:** Data-Driven Modeling and Optimization of WEDM Parameters for Ti-6Al-7Nb (Nov 2025)
-
-## Acknowledgements
-
-- **Supervisor:** Dr. Sankha Deb, Department of Mechanical Engineering, IIT Kharagpur
-- **Technical Assistance:** Mr. Gobinda Chandra Behera, Research Scholar
 
 ## License
 
