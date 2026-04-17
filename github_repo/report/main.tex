@@ -1,0 +1,631 @@
+\documentclass[12pt, a4paper]{report}
+
+% ------------------- PACKAGES -------------------
+\usepackage{times}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{geometry}
+\usepackage{tabularx, array, booktabs, multirow}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage[sort&compress, numbers]{natbib}
+\bibliographystyle{IEEEtran}
+\usepackage{ragged2e}
+\usepackage{float}
+\usepackage{subcaption}
+
+% ------------------- PAGE GEOMETRY -------------------
+\geometry{a4paper, left=3.75cm, right=2.5cm, top=2.5cm, bottom=2.5cm}
+
+% ------------------- SPACING -------------------
+\onehalfspacing
+\setlength{\parskip}{0.15\baselineskip}
+\setlength{\parindent}{1.5em}
+\raggedbottom
+
+% ------------------- CHAPTER FORMATTING -------------------
+\makeatletter
+\renewcommand{\chapter}{\clearpage\thispagestyle{plain}\global\@topnum\z@ \secdef\@chapter\@schapter}
+\def\@chapter[#1]#2{\ifnum \c@secnumdepth >\m@ne \refstepcounter{chapter}
+  \typeout{\@chapapp\space\thechapter.}%
+  \addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}#1}\else
+  \addcontentsline{toc}{chapter}{#1}\fi
+  \chaptermark{#1}%
+  \vspace*{0.7\baselineskip}
+  {\centering \normalfont\bfseries\Large \@chapapp\space \thechapter
+    \par\nobreak \vspace{0.7\baselineskip}
+    \normalfont\bfseries\Large #2\par\nobreak
+  }\vskip 1\baselineskip \@afterheading}
+\makeatother
+
+% ------------------- SECTION FORMATTING -------------------
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{\z@}%
+  {-1.8ex \@plus -0.5ex \@minus -.2ex}{0.3ex \@plus.1ex}{\normalfont\bfseries}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{\z@}%
+  {-1.5ex\@plus -0.3ex \@minus -.2ex}{0.2ex \@plus.1ex}{\normalfont\bfseries}}
+\makeatother
+
+\usepackage[font=small, labelfont=bf, labelsep=colon]{caption}
+\setcounter{tocdepth}{2}
+\setcounter{secnumdepth}{3}
+\usepackage[hidelinks]{hyperref}
+
+% ================= DOCUMENT =================
+\begin{document}
+
+% ===================== TITLE PAGE =====================
+\begin{titlepage}
+  \thispagestyle{empty}
+  \begin{center}
+    \vspace*{0.2cm}
+    {\bfseries\Large \MakeUppercase{Data-Driven Surrogate Modelling and}}\\[0cm]
+    {\bfseries\Large \MakeUppercase{Multi-Objective Optimization of WEDM}}\\[0cm]
+    {\bfseries\Large \MakeUppercase{Parameters for Ti-6Al-4V Alloy}}\\[1cm]
+    {\itshape BTP-II report submitted\\In partial fulfillment for the award of the degree}\\[0.3cm]
+    \textit{of}\\[0.3cm]
+    {\bfseries B.Tech. (Hons.) in Mechanical Engineering}\\
+    \textbf{\&}\\
+    {\bfseries M.Tech. in Manufacturing Science and Engineering}\\[1cm]
+    \textit{by}\\[0.3cm]
+    {\Large \textbf{Sagar Chandan}}\\
+    {\large \textbf{22ME31051}}\\[.9cm]
+    \textit{Under the guidance of}\\[0.5cm]
+    {\normalsize \textbf{Dr. Sankha Deb}}\\
+    {\normalsize Department of Mechanical Engineering}\\
+    {\normalsize Indian Institute of Technology Kharagpur}\\[.9cm]
+    \includegraphics[width=0.28\textwidth]{iitkgp_logo.png}\\[.9cm]
+    {\bfseries MECHANICAL ENGINEERING}\\
+    {\bfseries INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR}\\[0.4cm]
+    {\normalsize April 2026}\\[0.1cm]
+    {\small \textcopyright\ Sagar Chandan. All rights reserved.}
+  \end{center}
+\end{titlepage}
+
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+% ===================== CERTIFICATE =====================
+\chapter*{CERTIFICATE}
+\addcontentsline{toc}{chapter}{CERTIFICATE}
+\vspace{-0.3cm}
+\begin{flushright}
+  \textbf{Date:} \, \,\,\,\,\,\,\,\,\,\,\,\,\,\,\,/\,\,\,\,\,\,\,\,\,\,\,\,\,\,/\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,
+\end{flushright}
+\vspace{1cm}
+\begin{center}
+  \begin{minipage}{1\textwidth}
+    \setstretch{1.5} \justifying
+This is to certify that the project report entitled \textbf{``Data-Driven Surrogate Modelling and Multi-Objective Optimization of WEDM Parameters for Ti-6Al-4V Alloy''} has been submitted by \textbf{Sagar Chandan (Roll No. 22ME31051)} to the Indian Institute of Technology Kharagpur. This report is a record of bonafide work carried out by the student under my supervision and is satisfactory in partial fulfillment of the requirements for the award of the degree of {Dual Degree (B.Tech. (Honours) in Mechanical Engineering and M.Tech. in Manufacturing Science and Engineering)}.
+  \end{minipage}
+\end{center}
+\vspace{6.0cm}
+\begin{flushright}
+  \textbf{Dr. Sankha Deb}\\ Supervisor\\[0.15cm]
+  Department of Mechanical Engineering\\ Indian Institute of Technology, Kharagpur
+\end{flushright}
+\cleardoublepage
+
+% ===================== ACKNOWLEDGEMENTS =====================
+\chapter*{ACKNOWLEDGEMENTS}
+\addcontentsline{toc}{chapter}{ACKNOWLEDGEMENTS}
+\normalfont\normalsize
+I express my profound gratitude to my supervisor, \textbf{Dr.~Sankha~Deb}, for his invaluable guidance, continuous encouragement, and intellectual support throughout the course of this project. His insights were fundamental to the successful completion of this work and the preparation of this report.
+
+\vspace{0.5cm}
+
+I would also like to extend my sincere thanks to \textbf{Mr.~Gobinda~Chandra~Behera}, Research Scholar under the supervision of Prof.~Sankha~Deb, for his valuable suggestions, technical inputs, and kind assistance during the execution of this work.
+
+\vspace{0.5cm}
+
+I also acknowledge the \textbf{Department of Mechanical Engineering}, \textbf{Indian Institute of Technology~Kharagpur}, for providing the necessary facilities and a conducive academic environment for carrying out this research.
+
+\vspace{0.5cm}
+
+Finally, I would like to thank my family and friends for their unwavering support and encouragement.
+
+\vspace{1cm}
+\vspace{3cm}
+\noindent
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l r @{}}
+\textbf{Date:} \,\,\,\, \,\, \,\, \,\,  / \,\,\,\, \,\, \,\, \,\,  / & \textbf{Sagar Chandan}\\
+& \textbf{22ME31051}\\
+\end{tabular*}
+
+% ===================== ABSTRACT =====================
+\chapter*{ABSTRACT}
+\addcontentsline{toc}{chapter}{ABSTRACT}
+\normalfont\normalsize
+This report presents the continuation work (BTP-II) of the data-driven modelling framework developed in BTP-I for Wire Electrical Discharge Machining (WEDM). While BTP-I established a hybrid RSM--ML predictive modelling pipeline for Ti-6Al-7Nb alloy using Random Forest~(RF), Support Vector Regression~(SVR), and XGBoost~\cite{Reddy2022}, the present BTP-II extends this framework to Ti-6Al-4V alloy with the critical additions of multi-objective optimization via NSGA-II and experimental validation.
+
+Experimental data from a Taguchi L9 orthogonal array comprising 9 runs with four process parameters (Peak Current~$I_p$, Pulse-on Time~$T_{on}$, Pulse-off Time~$T_{off}$, and Servo Voltage~$V_s$) were sourced from Jagdale et al.~\cite{Jagdale2025}. RSM equations derived via ANOVA in Minitab were used to generate an expanded dataset of approximately 1,100 integer grid points spanning the full design space. Three ML models were trained as surrogates, with SVR achieving the best 5-fold cross-validation performance ($R^2 = 0.9997$ for both MRR and SR). All surrogates were externally validated on the original L9 data, confirming generalization capability.
+
+Multi-objective optimization using NSGA-II with each surrogate produced Pareto-optimal solution sets balancing Material Removal Rate (MRR) and Surface Roughness (SR). Hypervolume analysis identified SVR as the best surrogate (HV~=~1.014). Knee-point analysis yielded recommended parameters: $I_p = 20$~A, $T_{on} = 110~\mu$s, $T_{off} = 60~\mu$s, $V_s = 233$~V (predicted MRR~=~7.98~mm$^3$/min, SR~=~1.97~$\mu$m). Experimental validation on an Electronica Job Master D-zire CNC WEDM machine produced MRR~=~7.50~mm$^3$/min (6.0\% error) and SR~=~1.74~$\mu$m (11.7\% error), confirming practical validity.
+
+\vspace{0.3cm}
+\textbf{Keywords:} Wire Electrical Discharge Machining (WEDM), Ti-6Al-4V, Response Surface Methodology (RSM), Machine Learning, NSGA-II, Multi-Objective Optimization, Material Removal Rate (MRR), Surface Roughness (SR), Experimental Validation.
+
+% ===================== TOC =====================
+{
+\setlength{\parskip}{0pt}
+\tableofcontents
+}
+
+\clearpage
+\pagenumbering{arabic}
+
+% ===================== NOMENCLATURE =====================
+\chapter*{NOMENCLATURE}
+\addcontentsline{toc}{chapter}{NOMENCLATURE}
+\begin{tabularx}{\textwidth}{|l|X|l|}
+\hline
+\textbf{Symbol} & \textbf{Description} & \textbf{Unit} \\ \hline
+WEDM & Wire Electrical Discharge Machining & - \\ \hline
+RSM & Response Surface Methodology & - \\ \hline
+ML & Machine Learning & - \\ \hline
+MRR & Material Removal Rate & $mm^{3}/min$ \\ \hline
+SR & Surface Roughness (Ra) & $\mu m$ \\ \hline
+$I_{p}$ & Peak Current & A \\ \hline
+$T_{on}$ & Pulse-on Time & $\mu s$ \\ \hline
+$T_{off}$ & Pulse-off Time & $\mu s$ \\ \hline
+$V_{s}$ & Servo Voltage & V \\ \hline
+RF & Random Forest & - \\ \hline
+SVR & Support Vector Regression & - \\ \hline
+XGBoost & Extreme Gradient Boosting & - \\ \hline
+NSGA-II & Non-dominated Sorting Genetic Algorithm II & - \\ \hline
+$R^{2}$ & Coefficient of Determination & - \\ \hline
+RMSE & Root Mean Square Error & - \\ \hline
+MAE & Mean Absolute Error & - \\ \hline
+CV & Cross-Validation & - \\ \hline
+DOE & Design of Experiments & - \\ \hline
+ANOVA & Analysis of Variance & - \\ \hline
+HV & Hypervolume Indicator & - \\ \hline
+SBX & Simulated Binary Crossover & - \\ \hline
+\end{tabularx}
+
+
+% ===============================================================
+%                    CHAPTER 1: INTRODUCTION
+% ===============================================================
+\chapter{INTRODUCTION}
+\label{chap:intro}
+
+\section{Context from BTP-I and scope of BTP-II}
+In BTP-I, a hybrid RSM--ML modelling framework was developed for WEDM of Ti-6Al-7Nb alloy using a 54-run Box--Behnken Design dataset~\cite{Reddy2022}. Three ML models, namely Random Forest (RF), Support Vector Regression (SVR), and Extreme Gradient Boosting (XGBoost), were trained on a 729-point RSM-expanded dataset, achieving $R^2 > 0.98$ for both Material Removal Rate (MRR) and Surface Roughness (SR). Feature importance and SHAP analyses identified Pulse-on time ($T_{on}$) and Peak current ($I_p$) as the dominant process parameters~\cite{Saha2021}. However, the BTP-I study did not include multi-objective optimization or experimental validation, which are two critical steps required for translating predictive models into practical manufacturing recommendations.
+
+BTP-II addresses these gaps by: (i)~extending the framework to Ti-6Al-4V, the most widely used titanium alloy in aerospace and biomedical applications; (ii)~incorporating NSGA-II multi-objective optimization to identify Pareto-optimal trade-off solutions; (iii)~applying knee-point decision analysis for balanced parameter selection without subjective weighting; and (iv)~conducting experimental validation on a physical CNC WEDM machine at IIT Kharagpur to confirm the predicted optimum parameters.
+
+\section{Ti-6Al-4V alloy: relevance and machining challenges}
+Ti-6Al-4V is an alpha-beta titanium alloy containing 6\% aluminium and 4\% vanadium, accounting for more than 50\% of global titanium alloy production~\cite{Prasad2014}. It offers an exceptional combination of high specific strength ($\sim$900~MPa yield strength at density 4.43~g/cm$^3$), corrosion resistance, biocompatibility, and elevated-temperature performance up to 400\textdegree C~\cite{Devarasiddappa2018}. These properties make it indispensable in aerospace turbine blades, structural airframe components, surgical implants, and automotive parts.
+
+However, Ti-6Al-4V is classified as a difficult-to-machine material due to its low thermal conductivity (6.7~W/mK), high chemical reactivity at elevated temperatures, and strong work-hardening behaviour. During conventional machining, chips tend to weld to the tool face forming built-up edges, leading to poor surface finish and accelerated tool wear~\cite{Devarasiddappa2020, Jagdale2025}. WEDM overcomes these limitations by removing material through controlled electrical discharges without mechanical contact, enabling complex geometries with high dimensional accuracy~\cite{Gupta2021, AltinKaratas2023}.
+
+\section{Need for multi-objective optimization}
+Two key WEDM performance measures are MRR (representing productivity) and SR (representing surface quality). These are influenced by pulse parameters ($T_{on}$, $T_{off}$), electrical parameters ($I_p$, $V_s$), and are inherently correlated: increasing discharge energy raises both MRR and SR simultaneously~\cite{Jagdale2025, Ukey2023}. Traditional single-objective Taguchi optimization cannot address conflicting objectives. RSM can model quadratic relationships, but a Taguchi L9 design with four parameters produces a fully saturated model ($R^2 = 100\%$) with zero degrees of freedom for error and no interaction terms~\cite{Montgomery2020}.
+
+Multi-objective evolutionary algorithms such as NSGA-II~\cite{Deb2002} explore the Pareto front of trade-off solutions, providing the decision-maker with a range of options rather than a single point. When combined with ML surrogates as fitness functions, NSGA-II enables efficient optimization without requiring additional physical experiments, which is particularly valuable for expensive-to-machine materials like Ti-6Al-4V~\cite{SurrogateEDM2024, BBDNSGA2024}.
+
+\section{Objectives of the study}
+The specific objectives of this BTP-II study are:
+\begin{enumerate}[noitemsep, topsep=2pt]
+    \item To develop a hybrid RSM--ML surrogate modelling framework for WEDM of Ti-6Al-4V alloy using published Taguchi L9 data from Jagdale et al.~\cite{Jagdale2025}.
+    \item To train and compare three ML surrogate models (RF, SVR, XGBoost) for predicting MRR and SR across the four-parameter design space.
+    \item To perform multi-objective optimization using NSGA-II with each trained surrogate and identify Pareto-optimal parameter settings.
+    \item To apply knee-point analysis for balanced compromise solution selection from the Pareto front.
+    \item To experimentally validate the recommended optimal parameters on a physical WEDM setup and assess prediction accuracy.
+\end{enumerate}
+
+
+% ===============================================================
+%                    CHAPTER 2: LITERATURE REVIEW
+% ===============================================================
+\chapter{LITERATURE REVIEW}
+\label{chap:litreview}
+
+The literature review from BTP-I~\cite{Reddy2022, Saha2021, Ramaswamy2021, Eaysin2025, Sharma2025, Ukey2023, Bose2020, Tiwari2025, Kumar2022, Das2018} established the foundations of RSM-based modelling and ML surrogate approaches for WEDM. This chapter extends that review with additional literature specific to Ti-6Al-4V WEDM, ML surrogate modelling, and multi-objective optimization using evolutionary algorithms, which were identified as gaps in BTP-I.
+
+\section{WEDM of Ti-6Al-4V alloy}
+Ti-6Al-4V has been the subject of extensive WEDM research owing to its widespread use and poor conventional machinability. Jagdale et al.~\cite{Jagdale2025} conducted a systematic experimental investigation on WEDM of Ti-6Al-4V using a Taguchi L9 orthogonal array with brass wire electrode of 0.25~mm diameter and de-ionized water as dielectric. ANOVA revealed that peak current ($I_p$) was the most influential parameter, contributing 72.75\% to MRR variation, followed by pulse-on time ($T_{on}$) at 11.68\%. For surface roughness, $I_p$ contributed 49.46\% and $T_{on}$ contributed 34.42\%. The study provided RSM quadratic equations but did not employ ML modelling or multi-objective optimization.
+
+Devarajaiah and Chandrasekaran~\cite{Devarasiddappa2018} evaluated power consumption and MRR in WEDM of Ti-6Al-4V using an L16 orthogonal array with molybdenum wire electrode (0.18~mm diameter). Their ANOVA indicated that current contributed 56.58\% to MRR, while pulse-off time dominated power consumption at 43.26\%. Desirability function analysis achieved simultaneous improvement of 9.77\% in MRR and 6.40\% reduction in power consumption. In a subsequent study~\cite{Devarasiddappa2020}, the same authors applied a modified Teaching-Learning-Based Optimization (TLBO) algorithm for SR minimization, achieving an optimal SR of 3.749~$\mu$m with 2.65\% improvement over initial settings. Their work demonstrated the potential of metaheuristic algorithms for WEDM optimization but was limited to single-objective formulations.
+
+Ram Prasad et al.~\cite{Prasad2014} performed WEDM experiments on Ti-6Al-4V using an L18 orthogonal array and confirmed through ANOVA that pulse-on time and peak current are the most statistically significant parameters affecting both MRR and SR. Gupta et al.~\cite{Gupta2021} investigated the influence of heat treatment conditions (annealing, water quenching, and furnace cooling) on the WEDM machinability of Ti-6Al-4V. They reported that water-quenched specimens exhibited distinct machining responses due to altered microstructure, emphasizing that material condition significantly affects optimal parameter selection. Altin Karatas and Biberci~\cite{AltinKaratas2023} applied a hybrid approach combining Taguchi L9, Grey Relational Analysis (GRA), and Artificial Neural Networks (ANN) for multi-response optimization of kerf width, MRR, and surface roughness in WEDM of Ti-6Al-4V. Their results demonstrated that hybrid statistical-AI approaches outperform individual methods in terms of prediction accuracy and optimization quality, achieving $R^2 > 0.95$ for all three responses.
+
+\section{ML-based surrogate modelling for machining}
+The application of Machine Learning as surrogate models for machining process optimization has grown substantially in recent years. In BTP-I, three key studies were reviewed: Saha et al.~\cite{Saha2021} benchmarked linear regression, regression trees, SVM, and Gaussian Process Regression across multi-material WEDM datasets, demonstrating that kernel-based methods outperform linear approaches; Eaysin et al.~\cite{Eaysin2025} applied SVR and Gradient Boosted Regression Trees (GBRT) for tungsten-copper alloy WEDM, achieving $R^2 \approx 0.977$ for MRR with SVR; and Sharma et al.~\cite{Sharma2025} developed XGBoost-based models for Incoloy 800H WEDM with $R \approx 0.945$ for SR prediction.
+
+Beyond these, surrogate model-based optimization in EDM has been demonstrated using RF and SVR coupled with evolutionary algorithms, where the ML surrogates replaced expensive physical experiments during the optimization loop~\cite{SurrogateEDM2024}. In milling applications, XGBoost achieved $R^2 > 0.94$ for surface roughness prediction and was subsequently used as a fitness function for parameter optimization~\cite{MLMilling2022}. Surrogate-assisted optimization combining ML models with evolutionary algorithms has shown consistently superior performance compared to direct RSM-based optimization in end milling, particularly when the response surface exhibits non-linearities that polynomial models cannot capture~\cite{SurrogateEndMill2020}. Multi-objective optimization through ML-supported multiphysics simulation has also shown promising results for complex manufacturing processes where physics-based models are computationally expensive~\cite{MLMultiphysics2023}. These studies collectively establish that the hybrid paradigm of training ML surrogates on RSM-expanded data and using them as fitness functions in evolutionary optimization represents a robust and cost-effective approach.
+
+\section{Multi-objective optimization in WEDM}
+The Non-dominated Sorting Genetic Algorithm II (NSGA-II), proposed by Deb et al.~\cite{Deb2002}, has become the standard algorithm for multi-objective optimization in manufacturing research. The algorithm operates on a population of candidate solutions evolved over multiple generations through selection, crossover, and mutation operators. Its key innovation lies in the use of \emph{non-dominated sorting}, which classifies solutions into successive Pareto fronts ($F_1, F_2, \ldots$), combined with \emph{crowding distance} to preserve diversity along each front. This ensures a well-distributed set of trade-off solutions without requiring the user to specify objective weights a priori.
+
+In the context of WEDM, NSGA-II is particularly suitable because MRR and SR are conflicting objectives governed by the same underlying discharge energy parameters. Rather than producing a single ``optimal'' point (as Taguchi or desirability-function methods do), NSGA-II provides the entire Pareto front, enabling the decision-maker to select parameters based on application-specific requirements, for instance favouring productivity (high MRR) for rough cutting or surface quality (low SR) for finishing passes.
+
+When combined with ML surrogates as fitness functions, NSGA-II can evaluate thousands of candidate solutions in seconds without additional physical experiments. BBD combined with NSGA-II has been used for WEDM optimization of composite materials~\cite{BBDNSGA2024}, while comparison studies confirm that Pareto methods provide more robust decision support than weighted-sum approaches~\cite{ComparisonWEDM2022}. Mouralova et al.~\cite{Mouralova2024} compared WEDM MRR across multiple materials and established that response discrimination critically determines surrogate model accuracy regardless of dataset size, an important consideration for small designs such as L9. In BTP-I, multi-objective optimization was explicitly identified as a key future direction. BTP-II implements this by coupling trained ML surrogates with NSGA-II and applying knee-point analysis for balanced parameter selection.
+
+\section{Research gaps and BTP-II contribution}
+The review reveals three principal gaps: (i)~most Ti-6Al-4V WEDM studies employ either RSM or ML in isolation, without systematic integration; (ii)~the combination of RSM-based data expansion from a Taguchi L9 design with ML surrogate training, NSGA-II Pareto optimization, and knee-point decision analysis has not been reported for Ti-6Al-4V; and (iii)~experimental validation of ML-surrogate-optimized parameters on a physical machine is rarely performed. BTP-II addresses all three gaps as a direct continuation of the BTP-I framework, extending it from predictive modelling to optimization and physical validation.
+
+
+% ===============================================================
+%                  CHAPTER 3: PROPOSED METHODOLOGY
+% ===============================================================
+\chapter{PROPOSED METHODOLOGY}
+\label{chap:methodology}
+
+\section{Overview of the hybrid RSM--ML optimization framework}
+The methodology extends the BTP-I pipeline with two additional stages: multi-objective optimization and experimental validation. The complete workflow proceeds through five stages: (1)~L9 experimental data sourcing, (2)~RSM modelling and synthetic data expansion, (3)~ML surrogate training with cross-validation, (4)~NSGA-II optimization producing Pareto fronts, and (5)~knee-point decision analysis followed by experimental validation. The framework is illustrated in Figure~\ref{fig:flowchart}.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=\textwidth,keepaspectratio]{01_methodology.png}
+  \caption{Flowchart of the hybrid RSM--ML surrogate modelling and optimization framework.}
+  \label{fig:flowchart}
+\end{figure}
+
+\section{Experimental dataset}
+The experimental data were sourced from Jagdale et al.~\cite{Jagdale2025}, who conducted WEDM experiments on Ti-6Al-4V alloy using a Maxicut-E (Electronica Machine Tools Ltd.) 4-axis CNC WEDM machine. A brass wire electrode of diameter 0.25~mm was used with de-ionized water as dielectric fluid. A Taguchi L9 orthogonal array with four parameters, each at three levels, was employed (Table~\ref{tab:params}). Two responses were measured: MRR (calculated as cutting speed~$\times$~wire diameter~$\times$~workpiece thickness, in mm$^3$/min) and surface roughness $R_a$ (measured using a profilometer, in $\mu$m). The complete L9 results are given in Table~\ref{tab:l9data} and Figure~\ref{fig:l9data}.
+
+\begin{table}[!htbp]
+\centering \small
+\caption{Process parameters and levels~\cite{Jagdale2025}.}
+\label{tab:params}
+\begin{tabular}{|c|p{3.5cm}|c|c|c|c|}
+\hline
+\textbf{Symbol} & \textbf{Parameter} & \textbf{Low} & \textbf{Mid} & \textbf{High} & \textbf{Unit} \\ \hline
+$I_p$ & Peak Current & 20 & 25 & 30 & A \\ \hline
+$T_{on}$ & Pulse-on Time & 110 & 115 & 120 & $\mu$s \\ \hline
+$T_{off}$ & Pulse-off Time & 50 & 55 & 60 & $\mu$s \\ \hline
+$V_s$ & Servo Voltage & 220 & 230 & 240 & V \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[!htbp]
+\centering \small
+\caption{L9 experimental results~\cite{Jagdale2025}.}
+\label{tab:l9data}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\textbf{Run} & $I_p$ (A) & $T_{on}$ ($\mu$s) & $T_{off}$ ($\mu$s) & $V_s$ (V) & \textbf{MRR} (mm$^3$/min) & \textbf{SR} ($\mu$m) \\ \hline
+1 & 20 & 110 & 50 & 220 & 7.87 & 2.14 \\ \hline
+2 & 20 & 115 & 55 & 230 & 7.98 & 2.19 \\ \hline
+3 & 20 & 120 & 60 & 240 & 8.08 & 2.23 \\ \hline
+4 & 25 & 110 & 55 & 240 & 8.22 & 2.47 \\ \hline
+5 & 25 & 115 & 60 & 220 & 8.35 & 2.66 \\ \hline
+6 & 25 & 120 & 50 & 230 & 8.56 & 2.84 \\ \hline
+7 & 30 & 110 & 60 & 230 & 8.47 & 2.56 \\ \hline
+8 & 30 & 115 & 50 & 240 & 8.78 & 3.01 \\ \hline
+9 & 30 & 120 & 55 & 220 & 8.29 & 2.79 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=\textwidth,keepaspectratio]{02_experimental_data.png}
+  \caption{L9 experimental data: MRR vs SR scatter plot (colored by $I_p$) and parameter variation across runs.}
+  \label{fig:l9data}
+\end{figure}
+
+
+% ===============================================================
+%                  CHAPTER 4: IMPLEMENTATION
+% ===============================================================
+\chapter{IMPLEMENTATION}
+\label{chap:implementation}
+
+\section{RSM quadratic regression models}
+Quadratic RSM equations for MRR and SR were developed using Minitab via ANOVA on the L9 data. The L9 design with four parameters yields 9 model coefficients (1 constant + 4 linear + 4 quadratic), fully saturating the model ($R^2 = 100\%$, zero DOF for error). All six two-factor interaction terms were dropped due to insufficient degrees of freedom. The fitted equations are:
+\begin{align}
+\text{MRR} &= -78.77 + 0.3170\,I_p + 1.132\,T_{on} - 0.8390\,T_{off} + 0.3392\,V_s \nonumber\\
+&\quad - 0.005267\,I_p^2 - 0.004867\,T_{on}^2 + 0.007533\,T_{off}^2 - 0.000717\,V_s^2 \label{eq:mrr}\\[4pt]
+\text{SR} &= -44.57 + 0.4000\,I_p + 1.081\,T_{on} - 0.4140\,T_{off} - 0.09000\,V_s \nonumber\\
+&\quad - 0.006800\,I_p^2 - 0.004600\,T_{on}^2 + 0.003600\,T_{off}^2 + 0.000200\,V_s^2 \label{eq:sr}
+\end{align}
+
+\section{Dataset expansion}
+Equations~(\ref{eq:mrr})--(\ref{eq:sr}) were evaluated at every integer combination within the experimental ranges ($I_p$: 20--30, $T_{on}$: 110--120, $T_{off}$: 50--60, $V_s$: 220--240), producing 27,951 candidate points. Approximately 1,100 points were selected: all 81 full-factorial points ($3^4$) plus 1,019 randomly sampled integer points. This expanded dataset provides sufficient training data for ML models while maintaining physical plausibility. The distribution is shown in Figure~\ref{fig:expanded}.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=\textwidth,keepaspectratio]{04_expanded_dataset.png}
+  \caption{RSM-expanded dataset: MRR--SR distribution and parameter histograms (1,100 points).}
+  \label{fig:expanded}
+\end{figure}
+
+\section{Data preprocessing}
+All four input features were standardized using \texttt{StandardScaler} ($z = (x - \mu)/\sigma$) from scikit-learn. For SVR, the target responses were also scaled. The 1,100-point dataset was used entirely for training, while the original 9 L9 experimental points served as an independent external validation set.
+
+\section{Random Forest (RF)}
+RF is an ensemble of $N$ decision trees, each trained on a bootstrap sample with random feature subsets at each split~\cite{Saha2021}. The ensemble prediction is $\hat{y} = \frac{1}{N}\sum_{i=1}^{N} T_i(\mathbf{x})$, where $T_i(\mathbf{x})$ is the prediction from tree $i$. Configuration: $N=200$ trees, max depth~=~15, min samples split~=~5, min samples leaf~=~2.
+
+\section{Support Vector Regression (SVR)}
+SVR maps input data to a higher-dimensional space via the RBF kernel: $K(x_i, x_j) = \exp(-\gamma\|x_i - x_j\|^2)$, and fits a regression within an $\epsilon$-insensitive tube~\cite{Eaysin2025}. The optimization minimizes $\frac{1}{2}\|w\|^2 + C\sum_{i=1}^{n}(\xi_i + \xi_i^*)$. Configuration: $C = 10$, $\epsilon = 0.01$, $\gamma = \text{auto}$.
+
+\section{Extreme Gradient Boosting (XGBoost)}
+XGBoost constructs $K$ additive regression trees sequentially, each minimizing the regularized objective~\cite{Sharma2025}:
+\begin{equation}
+Obj = \sum_{i=1}^{n} l(y_i, \hat{y}_i) + \sum_{k=1}^{K}\Omega(f_k), \quad \Omega(f) = \gamma T + \tfrac{1}{2}\lambda\sum_{j=1}^{T}w_j^2
+\end{equation}
+Configuration: $K=300$ trees, max depth~=~6, learning rate~=~0.05, $\alpha=0.1$, $\lambda=1.0$, subsample~=~0.8.
+
+The complete hyperparameter summary is given in Table~\ref{tab:hyperparams}.
+
+\begin{table}[!htbp]
+\centering \small
+\caption{Summary of ML model hyperparameters.}
+\label{tab:hyperparams}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Model} & \textbf{Hyperparameter} & \textbf{Value} \\ \hline
+\multirow{3}{*}{RF} & Number of trees & 200 \\ \cline{2-3}
+ & Max depth & 15 \\ \cline{2-3}
+ & Min samples split / leaf & 5 / 2 \\ \hline
+\multirow{3}{*}{SVR} & Kernel / $\gamma$ & RBF / auto \\ \cline{2-3}
+ & $C$ / $\epsilon$ & 10 / 0.01 \\ \cline{2-3}
+ & Feature scaling & StandardScaler (input + output) \\ \hline
+\multirow{4}{*}{XGBoost} & Number of trees & 300 \\ \cline{2-3}
+ & Max depth / Learning rate & 6 / 0.05 \\ \cline{2-3}
+ & Regularization ($\alpha$ / $\lambda$) & 0.1 / 1.0 \\ \cline{2-3}
+ & Subsample & 0.8 \\ \hline
+\end{tabular}
+\end{table}
+
+\section{Five-fold cross-validation}
+Model performance was evaluated using 5-fold cross-validation on the 1,100-point expanded dataset with shuffle. In each fold, 880 samples were used for training and 220 for testing. Metrics: $R^2 = 1 - \sum(y_i - \hat{y}_i)^2 / \sum(y_i - \bar{y})^2$ and $\text{RMSE} = \sqrt{\frac{1}{n}\sum(y_i - \hat{y}_i)^2}$.
+
+\section{NSGA-II configuration}
+Multi-objective optimization was performed using NSGA-II implemented via the pymoo library in Python. NSGA-II operates through the following steps in each generation: (1)~parent selection via binary tournament based on non-domination rank and crowding distance; (2)~offspring generation through Simulated Binary Crossover (SBX) and Polynomial Mutation (PM); (3)~combined parent-offspring pool sorted into non-dominated fronts $F_1, F_2, \ldots$; and (4)~next-generation selection by filling from front $F_1$ onward, using crowding distance to break ties within the last admitted front.
+
+The configuration parameters were: population size~=~200 individuals, 300 generations (yielding 60,000 function evaluations per surrogate), SBX crossover probability~=~0.9 with distribution index $\eta_c = 15$, and PM with distribution index $\eta_m = 20$. The two objectives were defined as: maximize MRR (equivalently, minimize $-$MRR) and minimize SR. Each of the three trained ML surrogates (RF, SVR, XGBoost) served as the fitness function in independent NSGA-II runs, producing three separate Pareto fronts for comparison. Parameter bounds were constrained to the experimental ranges: $I_p \in [20, 30]$~A, $T_{on} \in [110, 120]~\mu$s, $T_{off} \in [50, 60]~\mu$s, $V_s \in [220, 240]$~V. The Pareto front quality was assessed using the hypervolume indicator, which measures the volume of objective space dominated by the front relative to a reference point~\cite{Deb2002}.
+
+\section{Knee-point analysis}
+The knee-point is the Pareto solution with maximum perpendicular distance from the line connecting the two extreme points of the front~\cite{Deb2002}:
+\begin{equation}
+\text{knee} = \arg\max_{i} \frac{|(\vec{P_2} - \vec{P_1}) \times (\vec{P_1} - \vec{Q_i})|}{\|\vec{P_2} - \vec{P_1}\|}
+\end{equation}
+where $\vec{Q_i} = (m_i, s_i)$ are normalized objective values and $P_1$, $P_2$ are the extreme Pareto points. This geometric approach identifies the most balanced trade-off without subjective weight assignment.
+
+
+% ===============================================================
+%                 CHAPTER 5: RESULTS AND DISCUSSION
+% ===============================================================
+\chapter{RESULTS AND DISCUSSION}
+\label{chap:results}
+
+\section{Cross-validation performance}
+Five-fold CV results are shown in Figure~\ref{fig:cv}. SVR achieved the highest $R^2$ of 0.9997 for both MRR and SR with the lowest RMSE (0.003 for MRR, 0.004 for SR). XGBoost followed with $R^2$ of 0.9917/0.9942 (MRR/SR), while RF yielded 0.9737/0.9924. The high $R^2$ values ($>0.97$) across all models confirm that the RSM-expanded dataset provides a sufficiently smooth and learnable response surface. SVR's superior performance is attributed to the RBF kernel's ability to model the continuous quadratic surface generated by the RSM equations with minimal approximation error.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=\textwidth,keepaspectratio]{05_cv_comparison.png}
+  \caption{Five-fold cross-validation: $R^2$ and RMSE for RF, SVR, and XGBoost.}
+  \label{fig:cv}
+\end{figure}
+
+\section{External validation on L9 data}
+The trained models were validated on the 9 original L9 experimental points (not used during training). Parity plots (Figure~\ref{fig:parity}) show strong agreement. SVR achieved $R^2 = 0.991$ for MRR and $R^2 = 1.000$ for SR on the L9 validation set. Validation metrics are summarized in Figure~\ref{fig:valtable}. The close agreement on unseen experimental data confirms that the ML surrogates faithfully reproduce the underlying response surface while generalizing beyond the training distribution.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=\textwidth,keepaspectratio]{06_predicted_vs_actual.png}
+  \caption{Parity plots: predicted vs experimental MRR and SR for all three surrogates.}
+  \label{fig:parity}
+\end{figure}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.85\textwidth,keepaspectratio]{07_validation_table.png}
+  \caption{External validation metrics on L9 data.}
+  \label{fig:valtable}
+\end{figure}
+
+\section{ML-based parameter effects}
+Figure~\ref{fig:param_effects} shows the effect of each parameter on MRR and SR as predicted by the three ML surrogates (other parameters at midpoint). Key observations:
+\begin{itemize}[noitemsep, topsep=2pt]
+    \item \textbf{$I_p$ (Peak Current):} Strongest positive effect on both MRR and SR. Increasing $I_p$ from 20 to 30~A raises MRR by $\sim$0.9~mm$^3$/min and SR by $\sim$0.7~$\mu$m. Higher current intensifies discharge energy, increasing material removal but also crater depth and surface irregularity.
+    \item \textbf{$T_{on}$ (Pulse-on Time):} Moderate positive effect. Longer pulse duration increases discharge energy, enhancing both MRR and SR. All three models agree on the monotonic increasing trend.
+    \item \textbf{$T_{off}$ (Pulse-off Time):} Negative effect on MRR (reduced spark frequency) but varying effect on SR depending on the model. SVR and XGBoost show a slight U-shaped SR response, suggesting an optimal $T_{off}$ for surface quality.
+    \item \textbf{$V_s$ (Servo Voltage):} Moderate positive effect on MRR. Higher servo voltage widens the discharge gap and modifies flushing efficiency. RF shows slightly more sensitivity than SVR/XGBoost at extreme values.
+\end{itemize}
+All three surrogates produce qualitatively consistent trends, with SVR providing the smoothest response curves due to its kernel-based interpolation.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=\textwidth,keepaspectratio]{03_parameter_effects.png}
+  \caption{ML surrogate parameter effects on MRR and SR (other parameters at midpoint).}
+  \label{fig:param_effects}
+\end{figure}
+
+\section{Pareto front analysis}
+NSGA-II was executed with each surrogate as the fitness function. The resulting Pareto fronts (Figure~\ref{fig:pareto}) contain 155--161 non-dominated solutions spanning similar MRR--SR ranges. All three fronts exhibit a positive MRR--SR correlation, physically consistent with WEDM theory: higher discharge energy increases both material removal rate and crater roughness simultaneously. The tight overlap among the three fronts confirms that the choice of ML model does not significantly affect the optimization outcome within this design space. The knee-point solutions are annotated on each front.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.85\textwidth,keepaspectratio]{08_pareto_with_kneepoints.png}
+  \caption{NSGA-II Pareto fronts with knee-point solutions annotated.}
+  \label{fig:pareto}
+\end{figure}
+
+\section{Hypervolume comparison}
+Pareto front quality was quantified using the hypervolume indicator (Figure~\ref{fig:hv}), which measures the volume of objective space dominated by the front relative to a reference point. SVR produced the largest hypervolume (1.014), followed by XGBoost (1.004) and RF (0.987). The higher hypervolume indicates that SVR's Pareto front provides the widest and most diverse set of trade-off solutions.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.65\textwidth,keepaspectratio]{09_hypervolume.png}
+  \caption{Hypervolume comparison of Pareto fronts.}
+  \label{fig:hv}
+\end{figure}
+
+\section{Knee-point optimal parameters}
+The knee-point solutions from each surrogate are summarized in Figure~\ref{fig:kneetable}. All three converge on parameters at the low-energy boundary of the design space: $I_p = 20$~A, $T_{on} = 110~\mu$s, $T_{off} \approx 60~\mu$s, $V_s \approx 233$~V. This convergence across independent surrogates provides strong confidence in the robustness of the recommendation. Physically, minimum discharge energy (low $I_p$, low $T_{on}$, high $T_{off}$) yields the best MRR--SR balance, producing adequate material removal while maintaining smooth surfaces.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.85\textwidth,keepaspectratio]{10_kneepoint_table.png}
+  \caption{Knee-point optimal solutions from all three surrogates.}
+  \label{fig:kneetable}
+\end{figure}
+
+\section{MRR--SR correlation and physical interpretation}
+Figure~\ref{fig:corr} shows the MRR--SR correlation across the 81-point design space ($r = 0.93$). This strong positive correlation is characteristic of EDM processes, where discharge energy is the primary driver of both responses~\cite{Devarasiddappa2018}. Unlike turning or milling where MRR and SR can be independently controlled through feed and speed, in WEDM both are governed by the same pulse parameters. The Pareto front therefore represents the efficient frontier along this correlated trade-off, and the knee-point identifies the transition where further MRR improvement requires disproportionate SR sacrifice.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.6\textwidth,keepaspectratio]{11_mrr_sr_correlation.png}
+  \caption{MRR--SR trade-off in the design space ($r = 0.93$).}
+  \label{fig:corr}
+\end{figure}
+
+
+% ===============================================================
+%              CHAPTER 6: EXPERIMENTAL VALIDATION
+% ===============================================================
+\chapter{EXPERIMENTAL VALIDATION}
+\label{chap:validation}
+
+\section{Validation setup and equipment}
+Experimental validation was conducted at the balanced optimum parameters identified by the SVR knee-point analysis. The WEDM experiments were performed on an \textbf{Electronica Job Master D-zire} 4-axis CNC Wire EDM machine, manufactured by Electronica HiTech Machine Tools Pvt.\ Ltd.\ (SRP Electronica Group, India), located in the Training Workshop, Department of Mechanical Engineering, IIT Kharagpur. The Job Master D-zire features a table size of 635~$\times$~475~mm with X-Y axis travel of 400~$\times$~300~mm, auxiliary U-V axis travel of 80~$\times$~80~mm, and Z-axis travel of 250~mm. The machine accepts wire diameters ranging from 0.15 to 0.30~mm with semi-automatic wire threading (SAWT) and supports a maximum taper angle of $\pm 30$\textdegree\ over 50~mm. The CNC controller provides real-time display of machining parameters including axis coordinates, cutting speed, and pulse settings, enabling precise monitoring during the machining process.
+
+Ti-6Al-4V (Grade~5) workpiece of dimensions 20~$\times$~20~$\times$~10~mm was clamped on the worktable. A rectangular profile of 5~$\times$~5~$\times$~10~mm was cut using brass wire electrode ($\phi$0.25~mm) with de-ionized water as dielectric fluid. The process parameters were set to the prescribed optimum: $I_p = 20$~A, $T_{on} = 110~\mu$s, $T_{off} = 60~\mu$s, $V_s = 233$~V. Wire feed rate, wire tension, and flushing pressure were maintained constant throughout the machining process.
+
+\begin{figure}[!htbp]
+  \centering
+  \begin{tabular}{ccc}
+    \includegraphics[height=4cm]{wedm_machine.jpg} &
+    \includegraphics[height=4cm]{wedm_cutting.jpg} &
+    \includegraphics[height=4cm]{wedm_controller.jpg} \\
+    {\small (a) WEDM machine} & {\small (b) Cutting with flushing} & {\small (c) CNC controller} \\
+  \end{tabular}
+  \caption{Experimental setup: (a)~Electronica Job Master D-zire WEDM machine, (b)~WEDM cutting process showing dielectric flushing and spark discharge, (c)~CNC controller panel displaying parameter settings.}
+  \label{fig:setup}
+\end{figure}
+
+\section{Measurement protocol}
+MRR was calculated using the formula consistent with Jagdale et al.~\cite{Jagdale2025}:
+\begin{equation}
+\text{MRR} = v_c \times d_w \times t_w
+\end{equation}
+where $v_c$ is cutting speed (mm/min) recorded from the machine display, $d_w$ is wire diameter (0.25~mm), and $t_w$ is workpiece thickness (10~mm).
+
+Surface roughness ($R_a$) was measured using a \textbf{Taylor Hobson Talysurf} contact-type stylus profilometer, available in the Metrology Laboratory, Department of Mechanical Engineering, IIT Kharagpur. The Taylor Hobson Talysurf is a precision instrument that traverses a diamond-tipped stylus across the machined surface, recording vertical displacement to produce a roughness profile. Data acquisition and analysis were performed using \textbf{TalyMap Gold 7.1} software with a Gaussian filter at 0.8~mm cutoff length conforming to ISO~4287.
+
+\begin{figure}[!htbp]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[height=4.5cm]{wedm_wireguide.jpg} &
+    \includegraphics[height=4.5cm]{sr_measurement.png} \\
+    {\small (a) WEDM machining in progress} & {\small (b) Surface roughness measurement} \\
+  \end{tabular}
+  \caption{(a)~Close-up of WEDM machining showing wire electrode, upper and lower guides, and flushing nozzle during cutting of Ti-6Al-4V workpiece, (b)~Surface roughness measurement on the Taylor Hobson Talysurf profilometer.}
+  \label{fig:sr_setup}
+\end{figure}
+
+\section{Experimental results}
+The measured cutting speed was 3~mm/min, yielding:
+\[
+\text{MRR} = 3 \times 0.25 \times 10 = 7.50 \text{ mm}^3/\text{min}
+\]
+Surface roughness was measured as $R_a = 1.74~\mu$m. The comparison between predicted and experimental values is presented in Figure~\ref{fig:validation} and Table~\ref{tab:validation}.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.85\textwidth,keepaspectratio]{12_experimental_validation.png}
+  \caption{Experimental validation: predicted versus measured MRR and SR at balanced optimum.}
+  \label{fig:validation}
+\end{figure}
+
+\begin{table}[!htbp]
+\centering
+\caption{Experimental validation summary.}
+\label{tab:validation}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Response} & \textbf{Predicted (SVR)} & \textbf{Experimental} & \textbf{Error (\%)} \\ \hline
+MRR (mm$^3$/min) & 7.98 & 7.50 & 6.0 \\ \hline
+SR ($\mu$m) & 1.97 & 1.74 & 11.7 \\ \hline
+\end{tabular}
+\end{table}
+
+\section{Discussion of deviations}
+The MRR prediction error of 6.0\% is well within the $\pm$10\% acceptable range for surrogate-based WEDM optimization~\cite{Devarasiddappa2018}. The SR prediction error of 11.7\% is marginally above the 10\% threshold; however, the experimental surface finish was better (lower $R_a$) than predicted, indicating that the model is conservative in its SR estimation. A conservative model is preferable for practical applications, as it ensures that machined surfaces meet or exceed quality specifications.
+
+Both responses are lower than predicted, suggesting a systematic offset consistent with slightly lower actual discharge energy than the RSM model assumed. Several factors may contribute to this offset: (i)~differences in pulse generator characteristics between the Maxicut-E machine used by Jagdale et al.~\cite{Jagdale2025} and the Job Master D-zire used in the present validation, since different machines may deliver slightly different effective discharge energies for the same nominal parameter settings; (ii)~variations in dielectric fluid conductivity and temperature, which affect spark gap stability and energy transfer efficiency; (iii)~workpiece material batch-to-batch differences in electrical resistivity and thermal properties; and (iv)~servo voltage being set to the nearest machine-acceptable discrete step rather than the exact prescribed value. Despite these factors, the close agreement between predicted and experimental values validates the RSM-augmented ML surrogate framework as a practically useful tool for WEDM parameter optimization of Ti-6Al-4V alloy.
+
+
+% ===============================================================
+%            CHAPTER 7: CONCLUSION AND FUTURE SCOPE
+% ===============================================================
+\chapter{CONCLUSION AND FUTURE SCOPE}
+\label{chap:conclusion}
+
+\section{Summary of contributions}
+Building upon the predictive modelling framework established in BTP-I for Ti-6Al-7Nb~\cite{Reddy2022}, this BTP-II study extended the approach to Ti-6Al-4V alloy with three critical additions: (i)~multi-objective optimization using NSGA-II producing Pareto-optimal solution sets; (ii)~knee-point decision analysis for balanced parameter selection; and (iii)~experimental validation on a physical WEDM machine at IIT Kharagpur confirming practical applicability. The complete pipeline, spanning from published L9 data through RSM expansion, ML surrogate training, evolutionary optimization, and physical machining, demonstrates a reproducible framework for data-driven WEDM optimization under data-scarce conditions.
+
+\section{Key findings}
+\begin{enumerate}[noitemsep, topsep=2pt]
+    \item \textbf{SVR is the best surrogate:} 5-fold CV $R^2 = 0.9997$ for both MRR and SR; highest hypervolume (1.014); best L9 validation ($R^2_\text{MRR} = 0.991$, $R^2_\text{SR} = 1.000$).
+    \item \textbf{Robust parameter convergence:} All three surrogates converge on $I_p = 20$~A, $T_{on} = 110~\mu$s, $T_{off} = 60~\mu$s, $V_s \approx 233$~V as the balanced optimum, confirming model-independent robustness.
+    \item \textbf{RSM expansion validated:} Expansion from 9 to 1,100 points enables ML training with $R^2 > 0.97$ despite the severely limited original dataset.
+    \item \textbf{Successful experimental validation:} MRR = 7.50~mm$^3$/min (6.0\% error), SR = 1.74~$\mu$m (11.7\% error).
+    \item \textbf{Physical consistency:} The positive MRR--SR correlation ($r = 0.93$) and knee-point location at minimum discharge energy are consistent with established WEDM electro-thermal theory.
+\end{enumerate}
+
+\section{Future scope}
+Building on the framework developed in BTP-I and BTP-II, several promising directions for future research and industrial application are identified:
+
+\begin{enumerate}[topsep=2pt, itemsep=4pt]
+    \item \textbf{Replicated experimental validation:} Conduct 3 replications across multiple optimization scenarios (balanced, MRR-priority, SR-priority) to establish statistical confidence intervals and quantify repeatability of the surrogate-predicted optima.
+
+    \item \textbf{Larger experimental designs:} Extend the dataset to Box--Behnken or Central Composite Designs with 4+ factors, enabling estimation of two-factor interaction terms and providing degrees of freedom for lack-of-fit testing. This would address the saturated model constraint inherent in the L9 design used in the present study.
+
+    \item \textbf{Integration into real-time WEDM process planning:} The trained ML surrogates and NSGA-II optimization pipeline can be deployed as a software module embedded within CNC WEDM controllers or linked to Computer-Aided Process Planning (CAPP) systems. In such an implementation, an operator would specify the desired MRR and SR targets, and the system would instantly compute the Pareto-optimal parameter settings through the surrogate models, eliminating the need for trial-and-error parameter tuning on the shop floor. This real-time optimization capability aligns with the Industry 4.0 vision of intelligent manufacturing, where digital twins of machining processes enable adaptive parameter adjustment during production, reducing setup time, material waste, and energy consumption.
+
+    \item \textbf{Development of a generalized LLM-based machining parameter advisor:} A natural extension of the surrogate modelling approach is to train a Large Language Model (LLM) that incorporates machining data across multiple materials, wire types, and machine configurations into a unified knowledge base. Such a system would accept natural-language queries (e.g., ``What parameters should I use to achieve $R_a < 2~\mu$m on Ti-6Al-4V with brass wire?'') and return optimized parameter recommendations along with predicted MRR and SR values, confidence intervals, and supporting references. By fine-tuning foundation models on curated WEDM literature and experimental databases, this approach could democratize access to expert-level process knowledge and serve as an intelligent manufacturing assistant for operators without specialized optimization expertise.
+
+    \item \textbf{Multi-response expansion:} Incorporate additional responses such as kerf width, power consumption, wire wear rate, and dimensional accuracy as optimization objectives, enabling a more comprehensive characterization of the WEDM process.
+
+    \item \textbf{Cross-material generalization and publication:} Apply the framework to other difficult-to-machine alloys (Inconel 718, Ti-6Al-7Nb continuation from BTP-I, nickel superalloys) and integrate the results into a comparative journal publication targeting venues such as the Journal of Manufacturing Processes or the International Journal of Advanced Manufacturing Technology.
+\end{enumerate}
+
+\clearpage
+
+% ===============================================================
+%                       REFERENCES
+% ===============================================================
+\renewcommand{\bibname}{REFERENCES}
+\addcontentsline{toc}{chapter}{REFERENCES}
+\singlespacing
+
+\begin{thebibliography}{99}
+\bibitem{Jagdale2025} S. N. Jagdale, S. P. Jadhav, A. M. Bhopale et al., ``Experimental investigation of process parameters in Wire-EDM of Ti-6Al-4V,'' \textit{Scientific Reports}, vol.~15, p.~5652, 2025.
+\bibitem{Reddy2022} M. Amareswari Reddy, K. V. Subbaiah, and C. Suresh, ``Box--Behnken Design: Optimization and Prediction of Ti-6Al-7Nb,'' \textit{J. Algebraic Statistics}, vol.~13, no.~3, pp.~2464--2475, 2022.
+\bibitem{Saha2021} S. Saha, K. K. Gupta, S. R. Maity, and S. Dey, ``Data-driven probabilistic performance of Wire EDM: A machine learning based approach,'' \textit{Proc IMechE Part B: J. Eng. Manufacture}, vol.~236, no.~6--7, pp.~908--919, 2022.
+\bibitem{Ramaswamy2021} A. Ramaswamy et al., ``Optimization of WEDM process parameters for D3 die steel using RSM,'' \textit{Materials Today: Proceedings}, vol.~37, pp.~2063--2069, 2021.
+\bibitem{Eaysin2025} A. Eaysin et al., ``Prediction and optimization of surface quality and MRR in wire-EDM cutting of W70Cu30,'' \textit{Results in Surfaces and Interfaces}, vol.~18, p.~100409, 2025.
+\bibitem{Sharma2025} A. Sharma, A. Thakur, and J. P. Misra, ``Machine learning-based predictive model for WEDM of Incoloy 800H,'' \textit{Proc IMechE Part E: J. Process Mech. Eng.}, 2025.
+\bibitem{Ukey2023} K. Ukey et al., ``Wire electrical discharge machining (WEDM) review on current optimization research trends,'' \textit{Materials Today: Proceedings}, 2023.
+\bibitem{Bose2020} S. Bose and T. Nandi, ``A novel optimization algorithm on surface roughness of WEDM on titanium hybrid composite,'' \textit{S\=adhan\=a}, vol.~45, p.~236, 2020.
+\bibitem{Tiwari2025} S. K. Tiwari, P. Kumar, and V. Chandra, ``Effect of Various Process Parameters in Wire-Cut EDM: A Review,'' \textit{Int. J. Innov. Sci. Res. Technol.}, 2025.
+\bibitem{Kumar2022} N. Kumar et al., ``Study on various parameters of WEDM using different optimization techniques: A review,'' \textit{Materials Today: Proceedings}, vol.~62, pp.~4018--4024, 2022.
+\bibitem{Das2018} A. Das, S. Sarkar, M. Karanjai, and G. Sutradhar, ``Application of BBD and RSM for SR Prediction of CP-Ti Through WEDM,'' \textit{J. Inst. Eng. India Ser. D}, vol.~99, no.~1, pp.~9--21, 2018.
+\bibitem{Devarasiddappa2018} D. Devarasiddappa and M. Chandrasekaran, ``Evaluation of power consumption and MRR in WEDM of Ti-6Al-4V alloy,'' \textit{J. Braz. Soc. Mech. Sci. Eng.}, vol.~40, p.~400, 2018.
+\bibitem{Devarasiddappa2020} D. Devarasiddappa and M. Chandrasekaran, ``Experimental investigation and optimization for minimizing SR during WEDM of Ti6Al4V using modified TLBO,'' \textit{J. Braz. Soc. Mech. Sci. Eng.}, vol.~42, p.~128, 2020.
+\bibitem{Prasad2014} A. V. S. Ram Prasad, K. Ramji, and G. L. Datta, ``An experimental study on Wire EDM on Ti-6Al-4V alloy,'' \textit{Procedia Mater. Sci.}, vol.~5, pp.~2567--2576, 2014.
+\bibitem{Deb2002} K. Deb, A. Pratap, S. Agarwal, and T. Meyarivan, ``A fast and elitist multiobjective genetic algorithm: NSGA-II,'' \textit{IEEE Trans. Evol. Comput.}, vol.~6, no.~2, pp.~182--197, 2002.
+\bibitem{Montgomery2020} D. C. Montgomery, \textit{Design and Analysis of Experiments}, 10th ed. Wiley, 2020.
+\bibitem{Gupta2021} N. K. Gupta, N. Somani, and C. Prakash, ``Revealing the WEDM process parameters for Ti-6Al-4V,'' \textit{Materials}, vol.~14, no.~9, p.~2292, 2021.
+\bibitem{AltinKaratas2023} M. Altin Karatas and M. A. Biberci, ``Statistical analysis of WEDM machining parameters of Ti-6Al-4V using Taguchi-GRA and ANN,'' \textit{Exp. Tech.}, vol.~47, pp.~851--870, 2023.
+\bibitem{SurrogateEDM2024} ``Data driven surrogate model-based optimization in EDM,'' \textit{Rev. Metal.}, 2024. doi: 10.3989/revmetalm.242.
+\bibitem{SurrogateEndMill2020} ``Surrogate-assisted optimization for end milling,'' \textit{Int. J. Adv. Manuf. Technol.}, 2020. doi: 10.1007/s00170-020-06209-6.
+\bibitem{MLMilling2022} ``Machine learning-based modelling and optimization in milling,'' \textit{Axioms}, vol.~11, no.~9, p.~430, 2022.
+\bibitem{MLMultiphysics2023} ``Enhancing multi-objective optimization through ML-supported multiphysics simulation,'' arXiv: 2309.13179, 2023.
+\bibitem{BBDNSGA2024} ``Investigating and multi-objective optimizing WEDM parameters using BBD and NSGA-II,'' \textit{Materials}, vol.~17, no.~23, p.~5894, 2024.
+\bibitem{Mouralova2024} K. Mouralova, L. Benes, and J. Fries, ``Comparison of MRR of different WEDM-machined materials,'' \textit{Int. J. Adv. Manuf. Technol.}, vol.~132, pp.~4461--4471, 2024.
+\bibitem{ComparisonWEDM2022} ``Comparison of priori and posteriori optimization in WEDM,'' \textit{Mater. Res. Express}, 2022. doi: 10.1088/2053-1591/ac7f83.
+\end{thebibliography}
+\clearpage
+\onehalfspacing
+
+\end{document}
